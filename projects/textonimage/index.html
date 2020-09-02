@@ -58,6 +58,8 @@
       <div id="mainCanvasContainer"></div>
       <br>
       <button onclick="redo()">Redo</button>
+      <br>
+      <a id="download" download="textOnImage.jpg" href="" onclick="download_img(this);">Download Image</a>
     </div>
   </div>
 
@@ -146,6 +148,7 @@
       return 0;
     }
 
+    let mainCanvas;
     let makeCanvas = (textArray) => {
       let width = findBiggestLength(textArray) + ((config.rectangle.textRectangleGap + config.rectangle.gap) * 2);
       let textBlockHeight = config.text.size + config.text.lineGap;
@@ -156,7 +159,7 @@
       container.innerHTML = "";
 
       //Make new canvas element
-      let mainCanvas = document.createElement('canvas');
+      mainCanvas = document.createElement('canvas');
       mainCanvas.style = "border:1px solid #d3d3d3;"
 
       //-----------------Scale Image according to text then scale the canvas according to Image--------------------------------------
@@ -237,6 +240,11 @@
       document.getElementById("resultPage").className = "hidden";
       document.getElementById("textPage").className = "page";
     }
+
+    let download_img = function (el) {
+      var image = mainCanvas.toDataURL("image/png");
+      el.href = image;
+    };
   </script>
 
   <script>
