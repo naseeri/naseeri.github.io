@@ -57,9 +57,12 @@
     <div class="result">
       <div id="mainCanvasContainer"></div>
       <br>
+      <p>Preview: </p>
+      <br>
+      <img src="" id="previewImage" width="400">
       <button onclick="redo()">Redo</button>
       <br>
-      <a id="download" download="textOnImage.jpg" href="" onclick="download_img(this);">Download Image</a>
+      <a id="download" download="textOnImage.png" href="" onclick="download_img(this);">Download Image</a>
     </div>
   </div>
 
@@ -233,6 +236,10 @@
 
       document.getElementById("textPage").className = "hidden";
       document.getElementById("resultPage").className = "page";
+
+      let previewImage = document.getElementById("previewImage");
+      previewImage.src = mainCanvas.toDataURL("image/png");
+      container.className = "hidden";
     };
 
     let redo = () => {
