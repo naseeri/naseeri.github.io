@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Place Pretty Text On Image</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <style>
+    .page {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .editor {
+      height: 500px;
+    }
+
+    .result {
+      width: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page" id="imageUploadPage">
+    <input type="file" id="imageLoader" name="imageLoader" />
+  </div>
+
+  <div class="hidden" id="textPage">
+
+    <div class="editor">
+      <h1>Text with Image Background</h1>
+      <div id="toolbar">
+        Text Color: <input type="color" id="textColor" value="#000000" style="width: 30px"> |
+        Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF" style="width: 30px">
+      </div>
+      <div id="editor">
+      </div>
+      <br>
+      <button onclick="copyText()">Convert</button><br>
+    </div>
+  </div>
+
+  <div class="hidden" id="resultPage">
+    <div class="result">
+      <div id="mainCanvasContainer"></div>
+      <br>
+      <button onclick="redo()">Redo</button>
+    </div>
+  </div>
+
+  <script async defer>
+    let log = (label, message) => {
+
+      if (config.debugModeOn) {
+        console.log(label, message);
+      }
+    };
+
+    let options = {
+      debug: 'warn',
+      placeholder: 'Compose an epic...',
+      readOnly: false,
+      theme: 'snow',
+      modules: {
+        toolbar: '#toolbar'
+      }
+    };
+    var quill = new Quill('#editor', options);
+
+    let config = {
+      text: {
+        size: 35,
+        font: "px Helvetica",
+        lineGap: 2
+      },
+      rectangle: {
+        gap: 20,
+        textRectangleGap: 5
+      },
+      debugModeOn: false
+    }
+
+    // Setup image loader and upload image
+    const imageLoader = document.getElementById('imageLoader');
+    imageLoader.addEventListener('change', handleImage, false);
+    let image;
+
+    function handleImage(e) {
+      let reader = new FileReader();
+      reader.onload = (event) => {
+        image = new Image();
+        image.onload = function () {
+
+        }
+        document.getElementById("imageUploadPage").className = "hidden";
+        document.getElementById("textPage").className = "page";
+        image.src = event.target.result;
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    let copyText = () => {
+      log('Content', quill.getContents());
+      log('Text', quill.getText());
+      log('Length', quill.getLength());
+
+      let splitText = quill.getText().split(/\r?\n/);
+      log('Text Split', splitText);
+      log('findBiggestLength', findBiggestLength(splitText));
+
+      makeCanvas(splitText);
+    }
+
+    let findBiggestLength = (array) => {
+      if (Array.isArray(array)) {
+
+        let max = 0;
+        let biggestText = "";
+        array.forEach((e) => {
+          if (e.length > max) {
+            max = e.length;
+            biggestText = e;
+          }
+        });
+
+        let textCanvas = document.createElement('canvas');
+        let ctx = textCanvas.getContext("2d");
+        ctx.font = `${config.text.size}${config.text.font}`;
+        let width = Math.round(ctx.measureText(biggestText).width);
+        return width;
+      }
+
+      return 0;
+    }
+
+    let makeCanvas = (textArray) => {
+      let width = findBiggestLength(textArray) + ((config.rectangle.textRectangleGap + config.rectangle.gap) * 2);
+      let textBlockHeight = config.text.size + config.text.lineGap;
+      let height = ((textBlockHeight) * textArray.length) + (config.rectangle.gap * 2);
+
+      //Empty the container (performance heavy)
+      let container = document.getElementById("mainCanvasContainer");
+      container.innerHTML = "";
+
+      //Make new canvas element
+      let mainCanvas = document.createElement('canvas');
+      mainCanvas.style = "border:1px solid #d3d3d3;"
+
+      //-----------------Scale Image according to text then scale the canvas according to Image--------------------------------------
+      let img = image;
+      log('img.naturalWidth', img.naturalWidth);
+      log('img.naturalHeight', img.naturalHeight);
+      log('mainCanvasWidth: ', width);
+      log('mainCanvasHeight: ', height);
+
+      let scale;
+      let imageWidth;
+      let imageHeight;
+
+      scale = width / img.naturalWidth;
+      imageWidth = img.naturalWidth * scale;
+      imageHeight = img.naturalHeight * scale;
+
+      if (imageHeight < height) {
+        log('imageHeight < height', imageHeight < height);
+        scale = height / imageHeight;
+        imageWidth = imageWidth * scale;
+        imageHeight = imageHeight * scale;
+      }
+
+      width = imageWidth;
+      height = imageHeight;
+
+      log('scale', scale);
+      log('imageWidth', imageWidth);
+      log('imageHeight', imageHeight);
+
+      //-------------------------------------------------------
+      mainCanvas.width = width;
+      mainCanvas.height = height;
+
+      //Canvas setup
+      let ctx = mainCanvas.getContext("2d");
+      ctx.font = `${config.text.size}${config.text.font}`;
+
+      //Place image
+
+      ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
+
+      log('width', width);
+      log('height', height);
+
+      //Place text background rectangle
+      var textBackColor = document.getElementById("textBackColor");
+      ctx.fillStyle = textBackColor.value;
+      ctx.globalAlpha = 0.5;
+      let rectangleWidth = width - (config.rectangle.gap * 2);
+      let rectangleHeight = height - (config.rectangle.gap * 2);
+      log('rectangleWidth', rectangleWidth);
+      log('rectangleHeight', rectangleHeight);
+      ctx.fillRect(config.rectangle.gap, config.rectangle.gap, rectangleWidth, rectangleHeight);
+
+      //Place Text
+      var textColor = document.getElementById("textColor");
+      ctx.fillStyle = textColor.value;
+      ctx.globalAlpha = 1;
+      let position = textBlockHeight + config.rectangle.textRectangleGap + config.rectangle.gap;
+      textArray.forEach((e) => {
+        let textWidth = ctx.measureText(e).width;
+        ctx.fillText(e, (width / 2) - (textWidth / 2), position);
+        position += textBlockHeight;
+        log('Position', position);
+      });
+
+      //Append new canvas element to container
+      container.appendChild(mainCanvas);
+
+      document.getElementById("textPage").className = "hidden";
+      document.getElementById("resultPage").className = "page";
+    };
+
+    let redo = () => {
+      textPage
+      document.getElementById("resultPage").className = "hidden";
+      document.getElementById("textPage").className = "page";
+    }
+  </script>
+
+  <script>
+
+  </script>
+</body>
+
+</html>
