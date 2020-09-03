@@ -1,6 +1,26 @@
 @font-face {
   font-family: 'SameerArma';
-  src: url('fonts/AA Sameer Armaa Unicode.ttf');
+  src: url('fonts/Sameer_Armaa_Unicode.ttf');
+}
+
+@font-face {
+  font-family: 'SameerAlmas';
+  src: url('fonts/Sameer_Almas_Regular.ttf');
+}
+
+@font-face {
+  font-family: 'SameerAsmaak';
+  src: url('fonts/Sameer_Asmaak_Regular.ttf');
+}
+
+@font-face {
+  font-family: 'SameerKhashab';
+  src: url('fonts/Sameer_Khashab_Bold.ttf');
+}
+
+@font-face {
+  font-family: 'Aadil';
+  src: url('fonts/Aadil.ttf');
 }
 
 .page {
