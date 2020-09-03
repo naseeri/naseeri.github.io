@@ -32,13 +32,13 @@
     }
 
     .slidecontainer {
-      width: 100%;
+      width: 300px;
     }
 
     .slider {
       -webkit-appearance: none;
       width: 100%;
-      height: 18px;
+      height: 12px;
       background: #d3d3d3;
       outline: none;
       opacity: 0.7;
@@ -54,16 +54,22 @@
       -webkit-appearance: none;
       appearance: none;
       width: 25px;
-      height: 25px;
+      height: 15px;
       background: #4CAF50;
       cursor: pointer;
     }
 
     .slider::-moz-range-thumb {
       width: 25px;
-      height: 25px;
+      height: 15px;
       background: #4CAF50;
       cursor: pointer;
+    }
+
+    .tool {
+      border: 1px solid;
+      display: inline-block;
+      margin: 3px;
     }
   </style>
 </head>
@@ -89,24 +95,35 @@
   <div class="hidden" id="resultPage">
     <div class="result">
       <div id="mainCanvasContainer"></div>
-      <div style="border: 1px solid; width:300px;">
+
+      <div class="tool">
         <button onclick="changeFontSize()">-</button>
         Font Size
         <button onclick="changeFontSize(true)">+</button>
       </div>
-      <br>
-      Text Color: <input type="color" id="textColor" value="#000000" onchange="changeTextColor(this.value)"
-        style="width: 30px"> |
-      Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF"
-        onchange="changeTextBackgroundColor(this.value)" style="width: 30px">
-      <br>
-      <p>Text Background Opacity: </p>
-      <div class="slidecontainer">
-        <input type="range" min="1" ontouchend="changeOpacity()" onmouseup="changeOpacity()" max="100" value="50"
-          class="slider" id="opacityRange">
-        <p>Opacity: <span id="opacityValue"></span></p>
+      <div class="tool">
+        <button onclick="toggleFontWeight()">B</button>
+      </div>
+      <div class="tool">
+        Text Color: <input type="color" id="textColor" value="#000000" onchange="changeTextColor(this.value)"
+          style="width: 30px; height: 15px;">
+      </div>
+      <div class="tool">
+        Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF"
+          onchange="changeTextBackgroundColor(this.value)" style="width: 30px; height: 15px;">
       </div>
       <br>
+      
+      <div class="tool">
+        <p>Text Background Opacity: </p>
+        <div class="slidecontainer">
+          <input type="range" min="1" ontouchend="changeOpacity()" onmouseup="changeOpacity()" max="100" value="50"
+            class="slider" id="opacityRange">
+          <p>Opacity: <span id="opacityValue"></span></p>
+        </div>
+      </div>
+      <br>
+
       <p>Preview: </p>
       <img src="" id="previewImage" style="width: 400px;">
       <br>
@@ -137,6 +154,7 @@
 
     let config = {
       text: {
+        weight: "",
         size: 35,
         font: "px Helvetica",
         lineGap: 2,
@@ -148,7 +166,7 @@
         opacity: 0.5,
         color: "#ffffff"
       },
-      debugModeOn: true
+      debugModeOn: false
     }
 
     // Setup image loader and upload image
@@ -254,13 +272,9 @@
 
       //Canvas setup
       let ctx = mainCanvas.getContext("2d");
-      ctx.font = `${config.text.size}${config.text.font}`;
 
       //Place image
       ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
-
-      log('width', width);
-      log('height', height);
 
       //Place text background rectangle
       ctx.fillStyle = config.rectangle.color;
@@ -272,6 +286,7 @@
       ctx.fillRect(config.rectangle.gap, config.rectangle.gap, rectangleWidth, rectangleHeight);
 
       //Place Text
+      ctx.font = `${config.text.weight}${config.text.size}${config.text.font}`;
       ctx.fillStyle = config.text.color;
       ctx.globalAlpha = 1;
       let position = textBlockHeight + config.rectangle.textRectangleGap + config.rectangle.gap;
@@ -332,6 +347,16 @@
         config.text.size += 2;
       } else {
         config.text.size -= 2;
+      }
+
+      makeCanvas(splitText);
+    };
+
+    let toggleFontWeight = () => {
+      if (config.text.weight === "") {
+        config.text.weight = "bold "
+      } else {
+        config.text.weight = ""
       }
 
       makeCanvas(splitText);
