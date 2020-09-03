@@ -258,6 +258,9 @@
       //Place Text
       let position = textBlockHeight + config.rectangle.textRectangleGap + config.rectangle.gap;
       textArray.forEach((e) => {
+        ctx.font = `${config.text.weight}${config.text.size}${config.text.font}`;
+        ctx.fillStyle = config.text.color;
+        ctx.globalAlpha = 1;
         let textWidth = ctx.measureText(e).width;
         log('e', e + ' ' + textWidth);
         let textX = (width / 2) - (textWidth / 2)
