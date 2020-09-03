@@ -71,7 +71,7 @@
 <body>
 
   <div class="page" id="imageUploadPage">
-    <input type="file" id="imageLoader" name="imageLoader" accept="image/*"/>
+    <input type="file" id="imageLoader" name="imageLoader" accept="image/*" />
   </div>
 
   <div class="hidden" id="textPage">
@@ -89,8 +89,16 @@
   <div class="hidden" id="resultPage">
     <div class="result">
       <div id="mainCanvasContainer"></div>
-      Text Color: <input type="color" id="textColor" value="#000000" onchange="changeTextColor(this.value)" style="width: 30px"> |
-      Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF" onchange="changeTextBackgroundColor(this.value)" style="width: 30px">
+      <div style="border: 1px solid; width:300px;">
+        <button onclick="changeFontSize()">-</button>
+        Font Size
+        <button onclick="changeFontSize(true)">+</button>
+      </div>
+      <br>
+      Text Color: <input type="color" id="textColor" value="#000000" onchange="changeTextColor(this.value)"
+        style="width: 30px"> |
+      Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF"
+        onchange="changeTextBackgroundColor(this.value)" style="width: 30px">
       <br>
       <p>Text Background Opacity: </p>
       <div class="slidecontainer">
@@ -319,6 +327,15 @@
       makeCanvas(splitText);
     };
 
+    let changeFontSize = (isInc) => {
+      if (isInc) {
+        config.text.size += 2;
+      } else {
+        config.text.size -= 2;
+      }
+
+      makeCanvas(splitText);
+    };
   </script>
 
   <script>
