@@ -14,6 +14,14 @@
 
 <body>
 
+  <div class="font_preload" style="opacity: 0">
+    <span style="font-family: SameerArma"></span>
+    <span style="font-family: SameerAlmas"></span>
+    <span style="font-family: SameerAsmaak"></span>
+    <span style="font-family: SameerKhashab"></span>
+    <span style="font-family: Aadil"></span>
+  </div>
+
   <div class="page" id="imageUploadPage" style="font-family: SameerArma;">
     <input type="file" id="imageLoader" name="imageLoader" accept="image/*" />
   </div>
@@ -34,38 +42,46 @@
     <div class="result">
       <div id="mainCanvasContainer"></div>
       <br> <br>
-      <div class="tool">
+      <div name="font" class="tool">
         Font:
         <select onchange="changeFont(this.value);">
           <option style="font-family: Helvetica" value="Helvetica">Helvetica</option>
           <optgroup label="Urdu Fonts">
-            <option style="font-family: SameerArma" value="SameerArma">دل کی آواز شاعری</option>
-            <option style="font-family: SameerAlmas" value="SameerAlmas">دل کی آواز شاعری</option>
-            <option style="font-family: SameerAsmaak" value="SameerAsmaak">دل کی آواز شاعری</option>
-            <option style="font-family: SameerKhashab" value="SameerKhashab">دل کی آواز شاعری</option>
-            <option style="font-family: Aadil" value="Aadil">دل کی آواز شاعری</option>
+            <option style="font-family: SameerArma" value="SameerArma">Sameer Arma</option>
+            <option style="font-family: SameerAlmas" value="SameerAlmas">Sameer Almas</option>
+            <option style="font-family: SameerAsmaak" value="SameerAsmaak">Sameer Asmaak</option>
+            <option style="font-family: SameerKhashab" value="SameerKhashab">Sameer Khashab</option>
+            <option style="font-family: Aadil" value="Aadil">Aadil</option>
           </optgroup>
         </select>
       </div>
-      <div class="tool">
+      <div name="fontSize" class="tool">
         <button onclick="changeFontSize()">-</button>
         Font Size
         <button onclick="changeFontSize(true)">+</button>
       </div>
-      <div class="tool">
-        <button onclick="toggleFontWeight()">B</button>
+      <div name="fontWeight" class="tool">
+        <button onclick="toggleFontWeight()">
+          <bold>B</bold>
+        </button>
       </div>
-      <div class="tool">
+      <div name="fontColor" class="tool">
         Text Color: <input type="color" id="textColor" value="#000000" onchange="changeTextColor(this.value)"
           style="width: 30px; height: 15px;">
       </div>
-      <div class="tool">
+      <div name="fontBkgColor" class="tool">
         Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF"
           onchange="changeTextBackgroundColor(this.value)" style="width: 30px; height: 15px;">
       </div>
+      <div name="bkgSwitch" class="tool">
+        Full Background:
+        <label class="switch">
+          <input type="checkbox" onclick="changeBackgroundStyle(this.checked);" checked>
+          <span class="shifter round"></span>
+        </label>
+      </div>
       <br>
-
-      <div class="tool">
+      <div name="bkgOpacity" class="tool">
         <p>Text Background Opacity: </p>
         <div class="slidecontainer">
           <input type="range" min="1" ontouchend="changeOpacity()" onmouseup="changeOpacity()" max="100" value="50"
@@ -115,7 +131,8 @@
         gap: 20,
         textRectangleGap: 5,
         opacity: 0.5,
-        color: "#ffffff"
+        color: "#ffffff",
+        full: true
       },
       debugModeOn: false
     }
@@ -228,22 +245,36 @@
       ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
 
       //Place text background rectangle
-      ctx.fillStyle = config.rectangle.color;
-      ctx.globalAlpha = config.rectangle.opacity;
-      let rectangleWidth = width - (config.rectangle.gap * 2);
-      let rectangleHeight = height - (config.rectangle.gap * 2);
-      log('rectangleWidth', rectangleWidth);
-      log('rectangleHeight', rectangleHeight);
-      ctx.fillRect(config.rectangle.gap, config.rectangle.gap, rectangleWidth, rectangleHeight);
+      if (config.rectangle.full) {
+        ctx.fillStyle = config.rectangle.color;
+        ctx.globalAlpha = config.rectangle.opacity;
+        let rectangleWidth = width - (config.rectangle.gap * 2);
+        let rectangleHeight = height - (config.rectangle.gap * 2);
+        log('rectangleWidth', rectangleWidth);
+        log('rectangleHeight', rectangleHeight);
+        ctx.fillRect(config.rectangle.gap, config.rectangle.gap, rectangleWidth, rectangleHeight);
+      }
 
       //Place Text
-      ctx.font = `${config.text.weight}${config.text.size}${config.text.font}`;
-      ctx.fillStyle = config.text.color;
-      ctx.globalAlpha = 1;
       let position = textBlockHeight + config.rectangle.textRectangleGap + config.rectangle.gap;
       textArray.forEach((e) => {
         let textWidth = ctx.measureText(e).width;
-        ctx.fillText(e, (width / 2) - (textWidth / 2), position);
+        log('e', e + ' ' + textWidth);
+        let textX = (width / 2) - (textWidth / 2)
+        let textY = position;
+
+        if (!config.rectangle.full) {
+          ctx.fillStyle = config.rectangle.color;
+          ctx.globalAlpha = config.rectangle.opacity;
+          let rectY = textY - config.text.size;
+          ctx.fillRect(textX, rectY, textWidth, config.text.size);
+        }
+
+        ctx.font = `${config.text.weight}${config.text.size}${config.text.font}`;
+        ctx.fillStyle = config.text.color;
+        ctx.globalAlpha = 1;
+        ctx.fillText(e, textX, textY);
+
         position += textBlockHeight;
         log('Position', position);
       });
@@ -317,6 +348,11 @@
       config.text.font = `px ${font}`;
       makeCanvas(splitText);
     };
+
+    let changeBackgroundStyle = (checked) => {
+      config.rectangle.full = checked;
+      makeCanvas(splitText);
+    }
   </script>
 
   <script>
