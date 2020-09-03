@@ -4,12 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Place Pretty Text On Image</title>
+  <title>Poem Writer</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <!-- <link href="style.css" rel="stylesheet"> -->
   <style>
     .page {
       height: 100vh;
@@ -27,7 +28,42 @@
     }
 
     .result {
-      width: auto;
+      width: 100%;
+    }
+
+    .slidecontainer {
+      width: 100%;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 18px;
+      background: #d3d3d3;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+
+    .slider:hover {
+      opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -35,17 +71,14 @@
 <body>
 
   <div class="page" id="imageUploadPage">
-    <input type="file" id="imageLoader" name="imageLoader" />
+    <input type="file" id="imageLoader" name="imageLoader" accept="image/*"/>
   </div>
 
   <div class="hidden" id="textPage">
 
     <div class="editor">
       <h1>Text with Image Background</h1>
-      <div id="toolbar">
-        Text Color: <input type="color" id="textColor" value="#000000" style="width: 30px"> |
-        Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF" style="width: 30px">
-      </div>
+      <div id="toolbar"></div>
       <div id="editor">
       </div>
       <br>
@@ -56,10 +89,19 @@
   <div class="hidden" id="resultPage">
     <div class="result">
       <div id="mainCanvasContainer"></div>
+      Text Color: <input type="color" id="textColor" value="#000000" onchange="changeTextColor(this.value)" style="width: 30px"> |
+      Text Background Color: <input type="color" id="textBackColor" value="#FFFFFF" onchange="changeTextBackgroundColor(this.value)" style="width: 30px">
+      <br>
+      <p>Text Background Opacity: </p>
+      <div class="slidecontainer">
+        <input type="range" min="1" ontouchend="changeOpacity()" onmouseup="changeOpacity()" max="100" value="50"
+          class="slider" id="opacityRange">
+        <p>Opacity: <span id="opacityValue"></span></p>
+      </div>
       <br>
       <p>Preview: </p>
+      <img src="" id="previewImage" style="width: 400px;">
       <br>
-      <img src="" id="previewImage" width="400">
       <button onclick="redo()">Redo</button>
       <br>
       <a id="download" download="textOnImage.png" href="" onclick="download_img(this);">Download Image</a>
@@ -89,13 +131,16 @@
       text: {
         size: 35,
         font: "px Helvetica",
-        lineGap: 2
+        lineGap: 2,
+        color: "#000000"
       },
       rectangle: {
         gap: 20,
-        textRectangleGap: 5
+        textRectangleGap: 5,
+        opacity: 0.5,
+        color: "#ffffff"
       },
-      debugModeOn: false
+      debugModeOn: true
     }
 
     // Setup image loader and upload image
@@ -117,12 +162,13 @@
       reader.readAsDataURL(e.target.files[0]);
     }
 
+    let splitText = [];
     let copyText = () => {
       log('Content', quill.getContents());
       log('Text', quill.getText());
       log('Length', quill.getLength());
 
-      let splitText = quill.getText().split(/\r?\n/);
+      splitText = quill.getText().split(/\r?\n/);
       log('Text Split', splitText);
       log('findBiggestLength', findBiggestLength(splitText));
 
@@ -203,16 +249,14 @@
       ctx.font = `${config.text.size}${config.text.font}`;
 
       //Place image
-
       ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
 
       log('width', width);
       log('height', height);
 
       //Place text background rectangle
-      var textBackColor = document.getElementById("textBackColor");
-      ctx.fillStyle = textBackColor.value;
-      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = config.rectangle.color;
+      ctx.globalAlpha = config.rectangle.opacity;
       let rectangleWidth = width - (config.rectangle.gap * 2);
       let rectangleHeight = height - (config.rectangle.gap * 2);
       log('rectangleWidth', rectangleWidth);
@@ -220,8 +264,7 @@
       ctx.fillRect(config.rectangle.gap, config.rectangle.gap, rectangleWidth, rectangleHeight);
 
       //Place Text
-      var textColor = document.getElementById("textColor");
-      ctx.fillStyle = textColor.value;
+      ctx.fillStyle = config.text.color;
       ctx.globalAlpha = 1;
       let position = textBlockHeight + config.rectangle.textRectangleGap + config.rectangle.gap;
       textArray.forEach((e) => {
@@ -252,6 +295,30 @@
       var image = mainCanvas.toDataURL("image/png");
       el.href = image;
     };
+
+    let opacityRange = document.getElementById("opacityRange");
+    let opacityLabel = document.getElementById("opacityValue");
+    opacityLabel.innerHTML = opacityRange.value;
+
+    opacityRange.oninput = function () {
+      opacityLabel.innerHTML = this.value;
+    }
+
+    let changeOpacity = () => {
+      config.rectangle.opacity = opacityRange.value / 100;
+      makeCanvas(splitText);
+    };
+
+    let changeTextColor = (value) => {
+      config.text.color = value;
+      makeCanvas(splitText);
+    };
+
+    let changeTextBackgroundColor = (value) => {
+      config.rectangle.color = value;
+      makeCanvas(splitText);
+    };
+
   </script>
 
   <script>
