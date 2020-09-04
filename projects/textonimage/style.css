@@ -23,6 +23,11 @@
   src: url('fonts/Aadil.ttf');
 }
 
+@font-face {
+  font-family: 'Bhadra';
+  src: url('fonts/Bhadra.ttf');
+}
+
 .page {
   height: 100vh;
   display: flex;
