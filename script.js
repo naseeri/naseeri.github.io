@@ -172,6 +172,7 @@ randomCards.forEach(card => renderCard(card));
 const homePage = document.getElementById('homePage');
 const proximityPage = document.getElementById('proximityPage');
 const voucherPage = document.getElementById('voucherPage');
+const bizPage = document.getElementById('bizPage');
 
 const proximityMenuButton = document.getElementById('proximityMenuButton');
 const homeButton = document.getElementById('homeButton');
@@ -181,11 +182,15 @@ const coffeeCard = document.getElementById('coffee');
 const spacer1 = document.getElementById('spacer1');
 const titleBiz = document.getElementById('titleBiz');
 
+const globOne = document.getElementById('globOne');
+const globBiz = document.getElementById('globBiz');
+
 const hideAllPages = () => {
 
   homePage.classList.add('hidden');
   proximityPage.classList.add('hidden');
   voucherPage.classList.add('hidden');
+  bizPage.classList.add('hidden');
 }
 
 proximityMenuButton.addEventListener('click', async () => {
@@ -198,12 +203,31 @@ homeButton.addEventListener('click', async () => {
 
   hideAllPages();
   homePage.classList.remove('hidden');
+  globOne.classList.remove('hidden');
+  globBiz.classList.add('hidden');
 });
 
 coffeeCard.addEventListener('click', async () => {
 
   hideAllPages();
   voucherPage.classList.remove('hidden');
+});
+
+
+const creditSecretBtn = document.getElementById('creditSecretBtn');
+
+let clickCount = 0;
+creditSecretBtn.addEventListener('click', () => {
+
+    clickCount++;
+    if (clickCount >= 9) {
+        
+        hideAllPages();
+        bizPage.classList.remove('hidden');
+        globOne.classList.add('hidden');
+        globBiz.classList.remove('hidden');
+        clickCount = 0;
+    }
 });
 
 
@@ -272,3 +296,75 @@ document.getElementById('directionsButton').addEventListener('click', () => {
     alert('Geolocation is not supported by your browser.');
   }
 });
+
+
+
+
+
+
+// --------------------------------- GlobalBiz
+const voucherForm = document.getElementById('voucher-form');
+const vouchersContainer = document.getElementById('vouchers-container');
+
+// Store vouchers in an array
+let vouchers = [];
+
+// Handle form submission
+voucherForm.addEventListener('submit', event => {
+  event.preventDefault();
+
+  // Get input values
+  const voucherNumber = document.getElementById('voucher-number').value;
+  const voucherDescription = document.getElementById('voucher-description').value;
+  const validUntil = document.getElementById('valid-until').value;
+
+  // Add voucher to the list
+  const voucher = { number: voucherNumber, description: voucherDescription, validUntil };
+  vouchers.push(voucher);
+
+  // Render the voucher list
+  renderVouchers();
+
+  // Reset the form
+  voucherForm.reset();
+});
+
+// Render vouchers as cards
+function renderVouchers() {
+  vouchersContainer.innerHTML = ''; // Clear existing vouchers
+  vouchers.forEach(voucher => {
+    const card = document.createElement('div');
+    card.className = 'voucher-card';
+    card.innerHTML = `
+      <h3>${voucher.number}</h3>
+      <p>${voucher.description}</p>
+      <p><strong>Valid Until:</strong> ${voucher.validUntil}</p>
+    `;
+    vouchersContainer.appendChild(card);
+  });
+}
+
+// Handle batch upload
+function handleBatchUpload() {
+  const fileInput = document.getElementById('batch-upload-input');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert('Please select a file to upload.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const lines = reader.result.split('\n');
+    lines.forEach(line => {
+      const [number, description, validUntil] = line.split(',');
+      if (number && description && validUntil) {
+        vouchers.push({ number: number.trim(), description: description.trim(), validUntil: validUntil.trim() });
+      }
+    });
+    renderVouchers();
+  };
+
+  reader.readAsText(file);
+}

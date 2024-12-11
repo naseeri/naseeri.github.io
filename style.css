@@ -196,7 +196,6 @@ input:checked+.slider:before {
   margin-top: 10px;
 }
 
-
 /* Glass blur background */
 .install-banner {
   position: fixed;
@@ -254,4 +253,76 @@ input:checked+.slider:before {
 
 .dismiss-button:hover {
   background-color: #bbb;
+}
+
+.voucher-form, .voucher-list, .batch-upload {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.voucher-form h2, .voucher-list h2, .batch-upload h2 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.submit-btn, .upload-btn {
+  background-color: #2f70ef;
+  color: white;
+  border: none;
+  padding: 7px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: small;
+}
+
+.submit-btn:hover, .upload-btn:hover {
+  background-color: #0059b3;
+}
+
+.vouchers-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.voucher-card {
+  background-color: #e6f2ff;
+  border: 1px solid #0059b3;
+  border-radius: 5px;
+  padding: 15px;
+  width: calc(50% - 10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.voucher-card h3 {
+  margin: 0 0 5px;
+  font-size: medium;
+}
+
+.voucher-card p {
+  margin: 0;
+  font-size: small;
+}
+
+.voucher-label {
+  font-weight: bold;
+  font-size: smaller;
 }
