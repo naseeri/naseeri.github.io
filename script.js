@@ -243,3 +243,32 @@ window.addEventListener('beforeinstallprompt', event => {
     installBanner.style.display = 'none'; // Hide the banner
   });
 });
+
+
+document.getElementById('directionsButton').addEventListener('click', () => {
+  // Business coordinates
+  const businessLat = -33.966297778782014;
+  const businessLng = 18.83030348331959;
+
+  if ('geolocation' in navigator) {
+    // Get the user's current location
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        // Construct the Google Maps URL with user's location as origin
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${businessLat},${businessLng}&travelmode=driving`;
+
+        // Open the URL in a new tab or window
+        window.open(googleMapsUrl, '_blank');
+      },
+      error => {
+        console.error('Error getting user location:', error);
+        alert('Unable to retrieve your location. Please enable location services and try again.');
+      }
+    );
+  } else {
+    alert('Geolocation is not supported by your browser.');
+  }
+});
