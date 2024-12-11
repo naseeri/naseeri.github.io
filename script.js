@@ -217,7 +217,7 @@ coffeeCard.addEventListener('click', async () => {
 const creditSecretBtn = document.getElementById('creditSecretBtn');
 
 let clickCount = 0;
-creditSecretBtn.addEventListener('click', () => {
+creditSecretBtn.addEventListener('click', async () => {
 
     clickCount++;
     if (clickCount >= 9) {
