@@ -6,7 +6,7 @@ const cardsContainer = document.getElementById('cards-container');
 const cards = [
   { title: "Live Better", text: "Available Balance", image: "img_liveBetter_logo.svg", id: "" },
   { title: "Capitec Connect", text: "Connecting you for less", image: "img_capitecConnect_logo.png", id: "" },
-  { title: "Always There For you", text: "Near by deals", image: "img_prox_logo.png", id: "proximityMenuButton" },
+  { title: "Capitec InReach", text: "Near by deals", image: "img_prox_logo.png", id: "proximityMenuButton" },
   { title: "Easy Equities", text: "Investing made easy", image: "img_easyEquities_logo.png", id: "" }
 ];
 
