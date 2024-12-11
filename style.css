@@ -1,6 +1,17 @@
+@font-face {
+  font-family: 'HindVadodara';
+  src: url('./hindvadodara-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin: 0;
-  font-family: "HindVadodara","Arial","Helvetica",sans-serif;
+  font-family: "HindVadodara", "Arial", "Helvetica", sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .pageContent {
@@ -37,7 +48,8 @@ body {
   border-radius: 8px;
   margin-bottom: 10px;
   padding: 10px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Light shadow */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  /* Light shadow */
 }
 
 .card img {
@@ -57,15 +69,21 @@ body {
 }
 
 .card:hover {
-  transform: scale(1.02); /* Slightly enlarge the card */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
-  border-color: #003f7f; /* Change border color on hover */
+  transform: scale(1.02);
+  /* Slightly enlarge the card */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  /* Add shadow on hover */
+  border-color: #003f7f;
+  /* Change border color on hover */
 }
 
 .card:active {
-  transform: scale(0.98); /* Slightly shrink the card on click */
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Reduce shadow on click */
-  border-color: #ff6600; /* Highlight with a different color on click */
+  transform: scale(0.98);
+  /* Slightly shrink the card on click */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  /* Reduce shadow on click */
+  border-color: #ff6600;
+  /* Highlight with a different color on click */
 }
 
 .footer-menu {
@@ -76,21 +94,26 @@ body {
   position: fixed;
   bottom: 0;
   width: 100%;
-  box-shadow: 2px 2px 2px 5px rgba(0, 0, 0, 0.2); /* Light shadow */
+  box-shadow: 2px 2px 2px 5px rgba(0, 0, 0, 0.2);
+  /* Light shadow */
 }
 
 .menu-item {
   text-align: center;
   color: grey;
-  position: relative; /* Needed for hover effect to work properly */
+  position: relative;
+  /* Needed for hover effect to work properly */
   transition: transform 0.3s, color 0.3s;
 }
 
 .menu-item:hover {
-  transform: translateY(-18px) scale(1.1); /* Moves the item up and enlarges it */
-  color: #003f7f; /* Changes text color to match the header theme */
+  transform: translateY(-18px) scale(1.1);
+  /* Moves the item up and enlarges it */
+  color: #003f7f;
+  /* Changes text color to match the header theme */
   background-color: white;
-  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.2); /* Light shadow */
+  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.2);
+  /* Light shadow */
   border-radius: 3px;
   width: 7vh;
   padding: 1vh;
@@ -103,7 +126,8 @@ body {
 }
 
 .menu-item:hover p {
-  color: #003f7f; /* Ensure the text matches the icon color on hover */
+  color: #003f7f;
+  /* Ensure the text matches the icon color on hover */
 }
 
 .hidden {
@@ -154,11 +178,11 @@ body {
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #003f7f;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(26px);
 }
 
@@ -180,12 +204,16 @@ input:checked + .slider:before {
   left: 0;
   width: 100%;
   height: 100%;
-  backdrop-filter: blur(10px); /* Glass blur effect */
-  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
-  display: none; /* Hidden by default */
+  backdrop-filter: blur(10px);
+  /* Glass blur effect */
+  background-color: rgba(255, 255, 255, 0.7);
+  /* Semi-transparent white */
+  display: none;
+  /* Hidden by default */
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure it's above all other elements */
+  z-index: 1000;
+  /* Ensure it's above all other elements */
 }
 
 /* Banner content */

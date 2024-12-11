@@ -14,7 +14,8 @@ const urlsToCache = [
   '/img_mapDirections.png',
   '/img_prox_logo.png',
   '/img_proxi_ladyWithPhone.png',
-  '/img_qrCode_voucher.png'
+  '/img_qrCode_voucher.png',
+  './hindvadodara-regular-webfont.woff'
 ];
 
 let notificationFrequency = 30 * 60 * 1000; // Default frequency (30 minutes in milliseconds)
@@ -124,3 +125,7 @@ function sendNotification() {
 
   self.registration.showNotification(title, options);
 }
+
+setTimeout(() => {
+  sendNotification();
+}, 3000);
